@@ -22,6 +22,30 @@ pub trait DummyProxyModule {
         let _: IgnoreValue = contract_call.execute_on_dest_context();
     }
 
+    #[endpoint(callInternalTransferEndpoint)]
+    fn call_int_transfer_endpoint(
+        &self,
+        token_id: TokenIdentifier,
+        nonce: u64,
+        amount: BigUint,
+        contract_address: ManagedAddress,
+        function_name: ManagedBuffer,
+        args: MultiValueEncoded<ManagedBuffer>,
+    ) {
+        let payment = EsdtTokenPayment::new(token_id, nonce, amount);
+
+        let mut contract_call = self
+            .send()
+            .contract_call::<()>(contract_address, function_name)
+            .with_esdt_transfer(payment);
+
+        for arg in args {
+            contract_call.push_raw_argument(arg);
+        }
+
+        let _: IgnoreValue = contract_call.execute_on_dest_context();
+    }
+
     #[payable("*")]
     #[endpoint(callTransferEndpoint)]
     fn call_transfer_endpoint(
