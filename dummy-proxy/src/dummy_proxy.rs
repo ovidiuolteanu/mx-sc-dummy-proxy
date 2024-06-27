@@ -54,7 +54,7 @@ pub trait DummyProxyModule {
         function_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let payments = self.call_value().all_esdt_transfers();
+        let payments = self.call_value().all_esdt_transfers().clone_value();
 
         let mut contract_call = self
             .send()
