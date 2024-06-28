@@ -1,13 +1,16 @@
-use multiversx_sc_scenario::*;
+use multiversx_sc_scenario::ScenarioWorld;
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
 
-    blockchain.register_contract("file:output/dummy-proxy.wasm", dummy_proxy::ContractBuilder);
+    blockchain.register_contract(
+        "mxsc:output/dummy-proxy.mxsc.json",
+        dummy_proxy::ContractBuilder,
+    );
     blockchain
 }
 
 #[test]
 fn empty_rs() {
-    multiversx_sc_scenario::run_rs("scenarios/empty.scen.json", world());
+    world().run("scenarios/empty.scen.json");
 }

@@ -1,4 +1,4 @@
-use dummy_proxy::*;
+use dummy_proxy::DummyProxyContract;
 use multiversx_sc::types::Address;
 use multiversx_sc_scenario::{rust_biguint, testing_framework::*, DebugApi};
 
@@ -10,7 +10,8 @@ where
 {
     pub blockchain_wrapper: BlockchainStateWrapper,
     pub owner_address: Address,
-    pub contract_wrapper: ContractObjWrapper<dummy_proxy::ContractObj<DebugApi>, ContractObjBuilder>,
+    pub contract_wrapper:
+        ContractObjWrapper<dummy_proxy::ContractObj<DebugApi>, ContractObjBuilder>,
 }
 
 fn setup_contract<ContractObjBuilder>(

@@ -1,0 +1,2 @@
+[[proxy]]
+path = "tests/sc_proxy.rs"
