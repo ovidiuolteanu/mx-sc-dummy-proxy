@@ -1,2 +1,5 @@
 [[proxy]]
 path = "tests/sc_proxy.rs"
+
+[[proxy]]
+path = "interact-rs/src/proxy.rs"
