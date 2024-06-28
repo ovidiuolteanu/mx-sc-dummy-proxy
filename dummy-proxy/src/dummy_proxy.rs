@@ -2,7 +2,6 @@ multiversx_sc::imports!();
 
 #[multiversx_sc::module]
 pub trait DummyProxyModule {
-
     #[endpoint(callEndpoint)]
     fn call_endpoint(
         &self,
@@ -11,15 +10,12 @@ pub trait DummyProxyModule {
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
         let gas_left = self.blockchain().get_gas_left();
-        let mut contract_call = self
-            .send()
-            .contract_call::<()>(contract_address, function_name)
-            .with_gas_limit(gas_left);
-
-        for arg in args {
-            contract_call.push_raw_argument(arg);
-        }
-        let _: IgnoreValue = contract_call.execute_on_dest_context();
+        self.tx()
+            .to(&contract_address)
+            .gas(gas_left)
+            .raw_call(function_name)
+            .arguments_raw(args.to_arg_buffer())
+            .sync_call()
     }
 
     #[endpoint(callInternalTransferEndpoint)]
@@ -32,18 +28,12 @@ pub trait DummyProxyModule {
         function_name: ManagedBuffer,
         args: MultiValueEncoded<ManagedBuffer>,
     ) {
-        let payment = EsdtTokenPayment::new(token_id, nonce, amount);
-
-        let mut contract_call = self
-            .send()
-            .contract_call::<()>(contract_address, function_name)
-            .with_esdt_transfer(payment);
-
-        for arg in args {
-            contract_call.push_raw_argument(arg);
-        }
-
-        let _: IgnoreValue = contract_call.execute_on_dest_context();
+        self.tx()
+            .to(&contract_address)
+            .raw_call(function_name)
+            .arguments_raw(args.to_arg_buffer())
+            .payment((token_id, nonce, amount))
+            .sync_call()
     }
 
     #[payable("*")]
@@ -56,15 +46,11 @@ pub trait DummyProxyModule {
     ) {
         let payments = self.call_value().all_esdt_transfers().clone_value();
 
-        let mut contract_call = self
-            .send()
-            .contract_call::<()>(contract_address, function_name)
-            .with_multi_token_transfer(payments);
-
-        for arg in args {
-            contract_call.push_raw_argument(arg);
-        }
-
-        let _: IgnoreValue = contract_call.execute_on_dest_context();
+        self.tx()
+            .to(&contract_address)
+            .raw_call(function_name)
+            .arguments_raw(args.to_arg_buffer())
+            .payment(payments)
+            .sync_call()
     }
 }
