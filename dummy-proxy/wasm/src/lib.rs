@@ -5,9 +5,10 @@
 ////////////////////////////////////////////////////
 
 // Init:                                 1
+// Upgrade:                              1
 // Endpoints:                            3
 // Async Callback (empty):               1
-// Total number of exported functions:   5
+// Total number of exported functions:   6
 
 #![no_std]
 
@@ -18,6 +19,7 @@ multiversx_sc_wasm_adapter::endpoints! {
     dummy_proxy
     (
         init => init
+        upgrade => upgrade
         callEndpoint => call_endpoint
         callInternalTransferEndpoint => call_int_transfer_endpoint
         callTransferEndpoint => call_transfer_endpoint
