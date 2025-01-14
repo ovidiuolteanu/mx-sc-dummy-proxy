@@ -2,6 +2,7 @@ multiversx_sc::imports!();
 
 #[multiversx_sc::module]
 pub trait DummyProxyModule {
+    /// Simply calls the specified endpoint on given contract address
     #[endpoint(callEndpoint)]
     fn call_endpoint(
         &self,
@@ -18,6 +19,7 @@ pub trait DummyProxyModule {
             .sync_call()
     }
 
+    /// Calls the specified endpoint on given contract address while it also transfers user given tokens with the call
     #[endpoint(callInternalTransferEndpoint)]
     fn call_int_transfer_endpoint(
         &self,
@@ -36,6 +38,7 @@ pub trait DummyProxyModule {
             .sync_call()
     }
 
+    /// Calls the specified endpoint on given contract address while it also transfers specified tokens owned by the dummy proxy with the call
     #[payable("*")]
     #[endpoint(callTransferEndpoint)]
     fn call_transfer_endpoint(
