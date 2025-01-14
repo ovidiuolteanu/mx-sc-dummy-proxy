@@ -16,6 +16,3 @@ version = "0.50.5"
 
 [dev-dependencies.multiversx-sc-scenario]
 version = "0.50.5"
-
-[workspace]
-members = [".", "meta", "interact-rs"]

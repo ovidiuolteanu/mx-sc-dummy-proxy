@@ -1,0 +1,8 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "dummy-proxy",
+    "dummy-proxy/meta",
+    "dummy-proxy/interact-rs"
+]
