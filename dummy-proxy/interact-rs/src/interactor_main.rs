@@ -2,6 +2,7 @@
 
 mod proxy;
 
+use dummy_proxy::dummy_proxy::CallType;
 use multiversx_sc_snippets::imports::*;
 use multiversx_sc_snippets::sdk;
 use serde::{Deserialize, Serialize};
@@ -100,7 +101,7 @@ impl ContractInteract {
             .interactor
             .tx()
             .from(&self.wallet_address)
-            .gas(20_000_000u64)
+            .gas(50_000_000u64)
             .typed(proxy::DummyProxyContractProxy)
             .init()
             .code(&self.contract_code)
@@ -117,6 +118,7 @@ impl ContractInteract {
     }
 
     async fn call_endpoint(&mut self) {
+        let call_type: CallType = CallType::Sync;
         let contract_address = bech32::decode("");
         let function_name = ManagedBuffer::new_from_bytes(&b""[..]);
         let args = MultiValueVec::from(vec![ManagedBuffer::new_from_bytes(&b""[..])]);
@@ -128,7 +130,7 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(20_000_000u64)
             .typed(proxy::DummyProxyContractProxy)
-            .call_endpoint(contract_address, function_name, args)
+            .call_endpoint(call_type, contract_address, function_name, args)
             .returns(ReturnsResultUnmanaged)
             .prepare_async()
             .run()
@@ -138,6 +140,7 @@ impl ContractInteract {
     }
 
     async fn call_int_transfer_endpoint(&mut self) {
+        let call_type: CallType = CallType::Sync;
         let token_id = TokenIdentifier::from_esdt_bytes(&b""[..]);
         let nonce = 0u64;
         let amount = BigUint::<StaticApi>::from(0u128);
@@ -153,6 +156,7 @@ impl ContractInteract {
             .gas(20_000_000u64)
             .typed(proxy::DummyProxyContractProxy)
             .call_int_transfer_endpoint(
+                call_type,
                 token_id,
                 nonce,
                 amount,
@@ -169,6 +173,7 @@ impl ContractInteract {
     }
 
     async fn call_transfer_endpoint(&mut self) {
+        let call_type: CallType = CallType::Sync;
         let token_id = String::new();
         let token_nonce = 0u64;
         let token_amount = BigUint::<StaticApi>::from(0u128);
@@ -184,7 +189,7 @@ impl ContractInteract {
             .to(self.state.current_address())
             .gas(20_000_000u64)
             .typed(proxy::DummyProxyContractProxy)
-            .call_transfer_endpoint(contract_address, function_name, args)
+            .call_transfer_endpoint(call_type, contract_address, function_name, args)
             .payment((
                 TokenIdentifier::from(token_id.as_str()),
                 token_nonce,

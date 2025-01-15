@@ -8,6 +8,7 @@
 #![allow(clippy::all)]
 
 use multiversx_sc::proxy_imports::*;
+use dummy_proxy::dummy_proxy::CallType;
 
 pub struct DummyProxyContractProxy;
 
@@ -63,18 +64,21 @@ where
     Gas: TxGas<Env>,
 {
     pub fn call_endpoint<
-        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg1: ProxyArg<ManagedBuffer<Env::Api>>,
-        Arg2: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
+        Arg0: ProxyArg<CallType>,
+        Arg1: ProxyArg<ManagedAddress<Env::Api>>,
+        Arg2: ProxyArg<ManagedBuffer<Env::Api>>,
+        Arg3: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
     >(
         self,
-        contract_address: Arg0,
-        function_name: Arg1,
-        args: Arg2,
+        call_type: Arg0,
+        contract_address: Arg1,
+        function_name: Arg2,
+        args: Arg3,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("callEndpoint")
+            .argument(&call_type)
             .argument(&contract_address)
             .argument(&function_name)
             .argument(&args)
@@ -82,24 +86,27 @@ where
     }
 
     pub fn call_int_transfer_endpoint<
-        Arg0: ProxyArg<TokenIdentifier<Env::Api>>,
-        Arg1: ProxyArg<u64>,
-        Arg2: ProxyArg<BigUint<Env::Api>>,
-        Arg3: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg4: ProxyArg<ManagedBuffer<Env::Api>>,
-        Arg5: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
+        Arg0: ProxyArg<CallType>,
+        Arg1: ProxyArg<TokenIdentifier<Env::Api>>,
+        Arg2: ProxyArg<u64>,
+        Arg3: ProxyArg<BigUint<Env::Api>>,
+        Arg4: ProxyArg<ManagedAddress<Env::Api>>,
+        Arg5: ProxyArg<ManagedBuffer<Env::Api>>,
+        Arg6: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
     >(
         self,
-        token_id: Arg0,
-        nonce: Arg1,
-        amount: Arg2,
-        contract_address: Arg3,
-        function_name: Arg4,
-        args: Arg5,
+        call_type: Arg0,
+        token_id: Arg1,
+        nonce: Arg2,
+        amount: Arg3,
+        contract_address: Arg4,
+        function_name: Arg5,
+        args: Arg6,
     ) -> TxTypedCall<Env, From, To, NotPayable, Gas, ()> {
         self.wrapped_tx
             .payment(NotPayable)
             .raw_call("callInternalTransferEndpoint")
+            .argument(&call_type)
             .argument(&token_id)
             .argument(&nonce)
             .argument(&amount)
@@ -110,17 +117,20 @@ where
     }
 
     pub fn call_transfer_endpoint<
-        Arg0: ProxyArg<ManagedAddress<Env::Api>>,
-        Arg1: ProxyArg<ManagedBuffer<Env::Api>>,
-        Arg2: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
+        Arg0: ProxyArg<CallType>,
+        Arg1: ProxyArg<ManagedAddress<Env::Api>>,
+        Arg2: ProxyArg<ManagedBuffer<Env::Api>>,
+        Arg3: ProxyArg<MultiValueEncoded<Env::Api, ManagedBuffer<Env::Api>>>,
     >(
         self,
-        contract_address: Arg0,
-        function_name: Arg1,
-        args: Arg2,
+        call_type: Arg0,
+        contract_address: Arg1,
+        function_name: Arg2,
+        args: Arg3,
     ) -> TxTypedCall<Env, From, To, (), Gas, ()> {
         self.wrapped_tx
             .raw_call("callTransferEndpoint")
+            .argument(&call_type)
             .argument(&contract_address)
             .argument(&function_name)
             .argument(&args)
