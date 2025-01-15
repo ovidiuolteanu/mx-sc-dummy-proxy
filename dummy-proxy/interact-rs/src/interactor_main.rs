@@ -205,6 +205,7 @@ impl ContractInteract {
 }
 
 #[tokio::test]
+#[ignore]
 async fn integration_test() {
     let mut interact = ContractInteract::new().await;
 

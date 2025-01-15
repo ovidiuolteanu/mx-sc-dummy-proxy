@@ -1,7 +1,10 @@
-use multiversx_sc_scenario::ScenarioWorld;
+use multiversx_sc_scenario::*;
+#[allow(deprecated)]
 
 fn world() -> ScenarioWorld {
     let mut blockchain = ScenarioWorld::new();
+
+    blockchain.set_current_dir_from_workspace("dummy-proxy");
 
     blockchain.register_contract(
         "mxsc:output/dummy-proxy.mxsc.json",
