@@ -149,4 +149,56 @@ pub trait DummyProxyModule {
                 .transfer_execute()
         }
     }
+
+    /// Calls the specified endpoint on given contract address while it also transfers user given tokens and internally owned tokens with the call
+    #[payable("*")]
+    #[endpoint(callHybridTransferEndpoint)]
+    fn call_hybrid_transfer_endpoint(
+        &self,
+        call_type: CallType,
+        token_id: TokenIdentifier,
+        nonce: u64,
+        amount: BigUint,
+        contract_address: ManagedAddress,
+        function_name: ManagedBuffer,
+        args: MultiValueEncoded<ManagedBuffer>,
+    ) {
+        let mut payments = self.call_value().all_esdt_transfers().clone_value();
+        let internal_payment = EsdtTokenPayment::new(token_id, nonce, amount);
+        payments.push(internal_payment);
+        let gas_left = self.blockchain().get_gas_left();
+        if call_type == CallType::Sync {
+            self.tx()
+                .to(&contract_address)
+                .raw_call(function_name)
+                .arguments_raw(args.to_arg_buffer())
+                .payment(payments)
+                .sync_call()
+        }
+        else if call_type == CallType::Async {
+            self.tx()
+                .to(&contract_address)
+                .raw_call(function_name)
+                .arguments_raw(args.to_arg_buffer())
+                .payment(payments)
+                .async_call_and_exit()
+        }
+        else if call_type == CallType::Promise {
+            self.tx()
+                .to(&contract_address)
+                .gas(gas_left)
+                .raw_call(function_name)
+                .arguments_raw(args.to_arg_buffer())
+                .payment(payments)
+                .register_promise()
+        }
+        else if call_type == CallType::TransferExecute {
+            self.tx()
+                .to(&contract_address)
+                .raw_call(function_name)
+                .arguments_raw(args.to_arg_buffer())
+                .payment(payments)
+                .transfer_execute()
+        }
+    }
 }
